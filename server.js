@@ -16,12 +16,6 @@ connectDB();
 //init middleware
 app.use(express.json({ extended: false }));
 
-app.use(
-    cors({
-        origin: config.get("CLIENT_ORIGIN")
-    })
-);
-
 app.use(formData.parse());
 
 //Define  Routes

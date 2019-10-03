@@ -58,10 +58,6 @@ export const Register = props => {
                         onChange={onChange.bind(this)}
                         required
                     />
-                    <small className="form-text">
-                        This site uses Gravatar so if you want a profile image,
-                        use a Gravatar email
-                    </small>
                 </div>
                 <div className="form-group">
                     <input

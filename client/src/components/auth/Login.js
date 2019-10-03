@@ -3,7 +3,7 @@ import { Link, Redirect } from "react-router-dom";
 import { connect } from "react-redux";
 import { login } from "../../actions/auth";
 
-const Login = props => {
+export const Login = props => {
     const [formData, setFormData] = useState({
         email: "",
         password: ""
@@ -33,6 +33,7 @@ const Login = props => {
             <form className="form" onSubmit={onSubmit.bind(this)}>
                 <div className="form-group">
                     <input
+                        className="testEmail"
                         type="email"
                         placeholder="Email Address"
                         name="email"
@@ -53,7 +54,7 @@ const Login = props => {
                 </div>
                 <input
                     type="submit"
-                    className="btn btn-primary"
+                    className="btn btn-primary btnLogin"
                     value="Login"
                 />
             </form>

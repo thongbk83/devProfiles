@@ -19,12 +19,12 @@ export const loadUser = () => async dispatch => {
 
     try {
         const res = await api.get("/api/auth");
-
         dispatch({
             type: USER_LOADED,
             payload: res.data
         });
     } catch (err) {
+        console.log(err);
         dispatch({
             type: AUTH_ERROR
         });
@@ -70,6 +70,7 @@ export const login = (email, password) => async dispatch => {
 
         dispatch(loadUser());
     } catch (err) {
+        console.log(76, err);
         const errors = err.response.data.errors;
 
         if (errors) {
@@ -84,6 +85,5 @@ export const login = (email, password) => async dispatch => {
 
 // Logout / Clear Profile
 export const logout = () => dispatch => {
-    dispatch({ type: CLEAR_PROFILE });
     dispatch({ type: LOGOUT });
 };

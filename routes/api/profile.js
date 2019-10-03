@@ -4,10 +4,17 @@ const config = require("config");
 const router = express.Router();
 const auth = require("../../middleware/auth");
 const { check, validationResult } = require("express-validator/check");
+const cloudinary = require("cloudinary");
 
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
-const Post = require("../../models/Post");
+
+//config cloudianary
+cloudinary.config({
+    cloud_name: config.get("CLOUD_NAME"),
+    api_key: config.get("INARY_API_KEY"),
+    api_secret: config.get("INARY_API_SECRET")
+});
 
 // @route    GET api/profile/me
 // @desc     Get current users profile
@@ -49,6 +56,7 @@ router.post(
         ]
     ],
     async (req, res) => {
+        console.log(58);
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
             return res.status(400).json({ errors: errors.array() });
@@ -96,7 +104,7 @@ router.post(
                 { user: req.user.id },
                 { $set: profileFields },
                 { new: true, upsert: true }
-            );
+            ).populate("user", ["name", "avatar"]);
             res.json(profile);
         } catch (err) {
             console.error(err.message);
@@ -147,8 +155,6 @@ router.get("/user/:user_id", async (req, res) => {
 // @access   Private
 router.delete("/", auth, async (req, res) => {
     try {
-        // Remove user posts
-        await Post.deleteMany({ user: req.user.id });
         // Remove profile
         await Profile.findOneAndRemove({ user: req.user.id });
         // Remove user
@@ -220,29 +226,6 @@ router.put(
         }
     }
 );
-
-// @route    DELETE api/profile/experience/:exp_id
-// @desc     Delete experience from profile
-// @access   Private
-// router.delete('/experience/:exp_id', auth, async (req, res) => {
-//   try {
-//     const profile = await Profile.findOne({ user: req.user.id });
-
-//     // Get remove index
-//     const removeIndex = profile.experience
-//       .map(item => item.id)
-//       .indexOf(req.params.exp_id);
-
-//     profile.experience.splice(removeIndex, 1);
-
-//     await profile.save();
-
-//     res.json(profile);
-//   } catch (err) {
-//     console.error(err.message);
-//     res.status(500).send('Server Error');
-//   }
-// });
 
 router.delete("/experience/:exp_id", auth, async (req, res) => {
     try {
@@ -334,27 +317,6 @@ router.put(
 // @route    DELETE api/profile/education/:edu_id
 // @desc     Delete education from profile
 // @access   Private
-//router.delete('/education/:edu_id', auth, async (req, res) => {
-//try {
-//const profile = await Profile.findOne({ user: req.user.id });
-
-// Get remove index
-//const removeIndex = profile.education
-//.map(item => item.id)
-//.indexOf(req.params.edu_id);
-/*
-    profile.education.splice(removeIndex, 1);
-
-    await profile.save();
-
-    res.json(profile);
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send('Server Error');
-  }
-});
-*/
-
 router.delete("/education/:edu_id", auth, async (req, res) => {
     try {
         const foundProfile = await Profile.findOne({ user: req.user.id });
@@ -364,15 +326,7 @@ router.delete("/education/:edu_id", auth, async (req, res) => {
         if (removeIndex === -1) {
             return res.status(500).json({ msg: "Server error" });
         } else {
-            // theses console logs helped me figure it out
-            /*   console.log("eduIds", eduIds);
-      console.log("typeof eduIds", typeof eduIds);
-      console.log("req.params", req.params);
-      console.log("removed", eduIds.indexOf(req.params.edu_id));
- */ foundProfile.education.splice(
-                removeIndex,
-                1
-            );
+            foundProfile.education.splice(removeIndex, 1);
             await foundProfile.save();
             return res.status(200).json(foundProfile);
         }
@@ -381,6 +335,7 @@ router.delete("/education/:edu_id", auth, async (req, res) => {
         return res.status(500).json({ msg: "Server error" });
     }
 });
+
 // @route    GET api/profile/github/:username
 // @desc     Get user repos from Github
 // @access   Public
@@ -407,6 +362,29 @@ router.get("/github/:username", (req, res) => {
         });
     } catch (err) {
         console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+// @route    Post api/profile/image-upload
+// @desc     Get user repos from Github
+// @access   Public
+router.post("/image-upload", auth, async (req, res) => {
+    const files = Object.values(req.files);
+    const image = files[0];
+
+    try {
+        const response = await cloudinary.uploader.upload(image.path);
+        const imageLink = response.secure_url;
+
+        //save avatar to profile
+        const user = await User.findById(req.user.id);
+        user.avatar = imageLink;
+        await user.save();
+
+        res.json(response);
+    } catch (error) {
+        console.error(error.message);
         res.status(500).send("Server Error");
     }
 });

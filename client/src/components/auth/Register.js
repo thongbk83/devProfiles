@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 import { setAlert } from "../../actions/alert";
 import { register } from "../../actions/auth";
 
-const Register = props => {
+export const Register = props => {
     const [formData, setFormData] = useState({
         name: "",
         email: "",

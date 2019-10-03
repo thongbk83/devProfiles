@@ -8,10 +8,6 @@ const config = require("config");
 
 const User = require("../../models/User");
 
-router.get("/", (req, res) => {
-    res.send("users route");
-});
-
 //register user
 router.post(
     "/",

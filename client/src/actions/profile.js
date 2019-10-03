@@ -15,9 +15,9 @@ import {
 export const getCurrentProfile = () => async dispatch => {
     try {
         if (localStorage.getItem("token")) {
-            api.defaults.headers.common[
-                "x-auth-token"
-            ] = localStorage.getItem("token");
+            api.defaults.headers.common["x-auth-token"] = localStorage.getItem(
+                "token"
+            );
         }
         const res = await api.get("/api/profile/me");
 
@@ -39,10 +39,10 @@ export const getCurrentProfile = () => async dispatch => {
 // Get all profiles
 export const getProfiles = () => async dispatch => {
     dispatch({ type: CLEAR_PROFILE });
-
+    console.log(42);
     try {
         const res = await api.get("/api/profile");
-
+        console.log(45, res);
         dispatch({
             type: GET_PROFILES,
             payload: res.data
@@ -106,7 +106,7 @@ export const createProfile = (
 ) => async dispatch => {
     try {
         const res = await api.post("/api/profile", formData);
-
+        console.log(res);
         dispatch({
             type: GET_PROFILE,
             payload: res.data

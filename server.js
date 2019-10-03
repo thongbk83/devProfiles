@@ -3,6 +3,11 @@ const express = require("express");
 const connectDB = require("./config/db");
 const path = require("path");
 
+const formData = require("express-form-data");
+const cors = require("cors");
+
+const config = require("config");
+
 const app = express();
 
 //connect db
@@ -11,9 +16,16 @@ connectDB();
 //init middleware
 app.use(express.json({ extended: false }));
 
+app.use(
+    cors({
+        origin: config.get("CLIENT_ORIGIN")
+    })
+);
+
+app.use(formData.parse());
+
 //Define  Routes
 app.use("/api/users", require("./routes/api/users"));
-app.use("/api/posts", require("./routes/api/posts"));
 app.use("/api/profile", require("./routes/api/profile"));
 app.use("/api/auth", require("./routes/api/auth"));
 
@@ -29,4 +41,4 @@ if (process.env.NODE_ENV === "production") {
 
 const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, () => console.log("server is start"));
+module.exports = app.listen(PORT, () => console.log("server is start"));

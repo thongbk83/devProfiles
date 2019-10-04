@@ -28,6 +28,7 @@ before_install:
   - yarn global add @angular/cli
 install:
   - yarn install
+  - cd client && yarn install
 script:
   - npm run testAll  --watch=false
   - npm build  --prod

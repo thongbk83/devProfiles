@@ -30,7 +30,7 @@ install:
   - yarn install
   - cd client && yarn install
 script:
-  - npm run testAll  --watch=false
+  - npm run test  --watch=false
   - npm build  --prod
 
 notifications:

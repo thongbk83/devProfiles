@@ -14,8 +14,7 @@ const Landing = ({ isAuthenticated }) => {
                 <div className="landing-inner">
                     <h1 className="x-large">Developer Profiles</h1>
                     <p className="lead">
-                        Welcome to Demo Page For Mern. Create a developer
-                        profile / portfolio
+                        Create a developer profile / portfolio
                     </p>
                     <div className="buttons">
                         <Link to="/register" className="btn btn-primary">

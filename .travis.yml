@@ -31,7 +31,7 @@ install:
   - cd client && yarn install
 script:
   - npm run test  --watch=false
-  - npm run heroku-postbuild
+  - npm build  --prod
 
 notifications:
   webhooks:

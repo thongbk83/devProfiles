@@ -14,7 +14,8 @@
         "dev": "concurrently \"npm run server\" \"npm run client\"",
         "testClient": "npm run test --prefix client",
         "test": "concurrently \"mocha --timeout 10000\" \"npm run testClient\"",
-        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
+        "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
+        "build": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client"
     },
     "keywords": [],
     "author": "",
